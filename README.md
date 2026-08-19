@@ -72,7 +72,7 @@ To add a new task, put your own screenshot in [`/tasks`](https://github.com/sash
 - [ ] Add Tailwind/Bootstrap options
 - [ ] Tasks with assets & variables
 - [ ] Switch code/preview on TV
-- [ ] Pulling → WebSockets
+- [x] Pulling → WebSockets
 - [ ] Add extra time to the round
 - [ ] End game & show confetti
 - [ ] Support 4 players

@@ -1,7 +1,8 @@
 import * as monaco from "monaco-editor";
 import { emmetHTML } from "emmet-monaco-es";
 
-import { formatTime } from "../utils/formatTime";
+import { formatTime, getTimeLeft } from "../utils/formatTime";
+import { connectSocket } from "../utils/socket";
 import HtmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 
 const params = new URLSearchParams(location.search);
@@ -32,35 +33,38 @@ const editor = monaco.editor.create(document.getElementById("editor"), {
 
 emmetHTML(monaco);
 
+const socket = connectSocket((msg) => {
+  if (msg.type === "state") onState(msg.state);
+  if (msg.type === "tasks") tasks = msg.tasks;
+});
+
+socket.send({ type: "getTasks" });
+
+let currentTaskId = null;
+let tasks = [];
+let lastState = { taskId: null };
+
 editor.onDidChangeModelContent(() => {
   const code = editor.getValue();
   localStorage.setItem("value", code);
-  fetch("/api/code", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ player: PLAYER, code }),
-  });
+  socket.send({ type: "code", player: PLAYER, code });
 });
 
-let currentTaskId = null;
-
-async function poll() {
-  try {
-    const state = await fetch("/api/state").then((r) => r.json());
-    timerEl.textContent = state.taskId
-      ? `${formatTime(state.timeLeft)}`
-      : "Waiting for the start…";
-
-    if (state.taskId !== currentTaskId) {
-      currentTaskId = state.taskId;
-      const tasks = await fetch("/api/tasks").then((r) => r.json());
-      const t = tasks.find((x) => x.name === state.taskId);
-      refImg.src = t ? t.url : "";
-    }
-  } catch (e) {
-    console.error(e);
+function onState(state) {
+  lastState = state;
+  timerEl.textContent = state.taskId
+    ? `${formatTime(getTimeLeft(state))}`
+    : "Waiting for the start…";
+  if (state.taskId !== currentTaskId) {
+    currentTaskId = state.taskId;
+    const t = tasks.find((x) => x.name === state.taskId);
+    refImg.src = t ? t.url : "";
   }
 }
 
-poll();
-setInterval(poll, 500);
+setInterval(() => {
+  const timeLeft = getTimeLeft(lastState);
+  timerEl.textContent = lastState.taskId
+    ? `${formatTime(timeLeft)}`
+    : "Waiting for the start…";
+}, 250);

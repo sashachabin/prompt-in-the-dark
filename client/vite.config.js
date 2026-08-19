@@ -21,8 +21,12 @@ export default defineConfig({
     port: process.env.CLIENT_DEV_PORT || 8080,
     host: true,
     proxy: {
-      "/api": {
+      "/tasks": {
         target: `http://localhost:${process.env.SERVER_PORT || 4747}`,
+      },
+      "/ws": {
+        target: `ws://localhost:${process.env.SERVER_PORT || 4747}`,
+        ws: true,
       },
     },
   },
