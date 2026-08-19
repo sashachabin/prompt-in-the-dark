@@ -1,11 +1,11 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   root: ".",
-  baseUr: ".",
   build: {
     outDir: "dist",
     rollupOptions: {
@@ -18,14 +18,14 @@ export default defineConfig({
     },
   },
   server: {
-    port: process.env.CLIENT_DEV_PORT || 8080,
+    port: Number(process.env["CLIENT_DEV_PORT"]) || 8080,
     host: true,
     proxy: {
       "/tasks": {
-        target: `http://localhost:${process.env.SERVER_PORT || 4747}`,
+        target: `http://localhost:${process.env["SERVER_PORT"] || 4747}`,
       },
       "/ws": {
-        target: `ws://localhost:${process.env.SERVER_PORT || 4747}`,
+        target: `ws://localhost:${process.env["SERVER_PORT"] || 4747}`,
         ws: true,
       },
     },

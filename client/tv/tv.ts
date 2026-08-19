@@ -1,14 +1,20 @@
-import { formatTime, getTimeLeft } from "../utils/formatTime";
-import { connectSocket } from "../utils/socket";
+import { formatTime, getTimeLeft } from "../utils/formatTime.ts";
+import { connectSocket } from "../utils/socket.ts";
+import type { GameState, TaskInfo } from "../types.ts";
 
-const player1Result = document.getElementById("frame1");
-const player2Result = document.getElementById("frame2");
-const timerEl = document.getElementById("timer");
+const player1Result = document.getElementById("frame1") as HTMLIFrameElement;
+const player2Result = document.getElementById("frame2") as HTMLIFrameElement;
+const timerEl = document.getElementById("timer") as HTMLDivElement;
 
-let currentTaskId = null;
-let lastCodes = { 1: "", 2: "" };
-let lastState = { taskId: null };
-let tasks = [];
+let currentTaskId: string | null = null;
+let lastCodes: Record<1 | 2, string> = { 1: "", 2: "" };
+let lastState: GameState = {
+  taskId: null,
+  duration: 0,
+  startAt: 0,
+  codes: { 1: "", 2: "" },
+};
+let tasks: TaskInfo[] = [];
 
 const socket = connectSocket((msg) => {
   if (msg.type === "state") onState(msg.state);
@@ -17,13 +23,13 @@ const socket = connectSocket((msg) => {
 
 socket.send({ type: "getTasks" });
 
-function onState(state) {
+function onState(state: GameState): void {
   lastState = state;
   timerEl.innerText = formatTime(getTimeLeft(state));
   if (state.taskId !== currentTaskId) {
     currentTaskId = state.taskId;
     const t = tasks.find((x) => x.name === state.taskId);
-    const img = document.getElementById("refImg");
+    const img = document.getElementById("refImg") as HTMLImageElement;
     img.src = t ? t.url : "";
     player1Result.srcdoc = "";
     player2Result.srcdoc = "";

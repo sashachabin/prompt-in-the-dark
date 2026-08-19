@@ -1,35 +1,38 @@
 import * as monaco from "monaco-editor";
 import { emmetHTML } from "emmet-monaco-es";
-
-import { formatTime, getTimeLeft } from "../utils/formatTime";
-import { connectSocket } from "../utils/socket";
+import { formatTime, getTimeLeft } from "../utils/formatTime.ts";
+import { connectSocket } from "../utils/socket.ts";
+import type { GameState, Player, TaskInfo } from "../types.ts";
 import HtmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 
 const params = new URLSearchParams(location.search);
-const timerEl = document.getElementById("timer");
-const refImg = document.getElementById("ref");
+const timerEl = document.getElementById("timer") as HTMLDivElement;
+const refImg = document.getElementById("ref") as HTMLImageElement;
 
-let PLAYER =
+let PLAYER: number =
   Number(params.get("player")) || Number(localStorage.getItem("player"));
 while (!PLAYER) {
   PLAYER = Number(prompt("Введите номер игрока (1 или 2):"));
 }
 window.history.replaceState({}, "", "/game/");
-localStorage.setItem("player", PLAYER);
+localStorage.setItem("player", String(PLAYER));
+const player = PLAYER as Player;
 
 self.MonacoEnvironment = {
-  getWorker: (moduleId, label) => {
-    return new HtmlWorker();
-  },
+  getWorker: (_moduleId, _label) => new HtmlWorker(),
 };
-const editor = monaco.editor.create(document.getElementById("editor"), {
-  value: localStorage.getItem("value") || "",
-  language: "html",
-  theme: "vs-dark",
-  fontSize: 15,
-  automaticLayout: true,
-  "editor.scrollBeyondLastLine": false,
-});
+
+const editor = monaco.editor.create(
+  document.getElementById("editor") as HTMLElement,
+  {
+    value: localStorage.getItem("value") || "",
+    language: "html",
+    theme: "vs-dark",
+    fontSize: 15,
+    automaticLayout: true,
+    scrollBeyondLastLine: false,
+  },
+);
 
 emmetHTML(monaco);
 
@@ -40,17 +43,22 @@ const socket = connectSocket((msg) => {
 
 socket.send({ type: "getTasks" });
 
-let currentTaskId = null;
-let tasks = [];
-let lastState = { taskId: null };
+let currentTaskId: string | null = null;
+let tasks: TaskInfo[] = [];
+let lastState: GameState = {
+  taskId: null,
+  duration: 0,
+  startAt: 0,
+  codes: { 1: "", 2: "" },
+};
 
 editor.onDidChangeModelContent(() => {
   const code = editor.getValue();
   localStorage.setItem("value", code);
-  socket.send({ type: "code", player: PLAYER, code });
+  socket.send({ type: "code", player, code });
 });
 
-function onState(state) {
+function onState(state: GameState): void {
   lastState = state;
   timerEl.textContent = state.taskId
     ? `${formatTime(getTimeLeft(state))}`
