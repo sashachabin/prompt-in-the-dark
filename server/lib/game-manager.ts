@@ -8,8 +8,7 @@ export interface GameState {
 }
 
 export class GameManager {
-  private current: { taskId: string; duration: number; startAt: number } | null =
-    null;
+  private current: { taskId: string; duration: number; startAt: number } | null = null;
   private codes: Record<Player, string> = { 1: "", 2: "" };
 
   start(taskId: string, duration: number): void {

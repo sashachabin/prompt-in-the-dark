@@ -4,9 +4,7 @@ export interface SocketHandle {
   send: (data: ClientMessage | string) => void;
 }
 
-export function connectSocket(
-  onMessage: (msg: ServerMessage) => void,
-): SocketHandle {
+export function connectSocket(onMessage: (msg: ServerMessage) => void): SocketHandle {
   let ws: WebSocket | null = null;
 
   function open(): void {

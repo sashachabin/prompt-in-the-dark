@@ -2,26 +2,21 @@
 
 [![Inspired by codeinthedark/editor](https://img.shields.io/badge/inspired--by-codeinthedark/editor-blue)](https://github.com/codeinthedark/editor)
 
-
 A client–server application of the Code In The Dark front-end game. Based on the original [Tictail](https://tictail.com/) challenge: recreate a UI from a single screenshot using HTML & CSS and don’t see the result until time’s up!
 
 - 2-player coding in Monaco editor with Emmet
 - Live updates on a TV screen
 - Admin controls for rounds and timing
 
-
 <br />
 
-| Main `/` | TV `/tv` |
-| --  | -- |
+| Main `/`                                                                                  | TV `/tv`                                                                                  |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | ![image](https://github.com/user-attachments/assets/d131cfd2-5926-442b-a214-a64dfa346402) | ![image](https://github.com/user-attachments/assets/61b2df27-2a36-4d87-9ebc-a49637b7d46e) |
 
-
-
-| Player editor `/game?player=1\|2` | Admin panel `/admin` |
-| --  | -- |
+| Player editor `/game?player=1\|2`                                                         | Admin panel `/admin`                                                                      |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | ![image](https://github.com/user-attachments/assets/66a1ef44-e9ee-4dbd-82ff-4a5fe8a727d5) | ![image](https://github.com/user-attachments/assets/3050bec3-0e05-48f5-bfde-b29c936e642e) |
-
 
 ## Host Your Own Contest
 
@@ -46,7 +41,6 @@ http://<server_ip>/game/?player=2
 http://<server_ip>/tv/
 ```
 
-
 ## Custom tasks
 
 There are 12 prepared tasks in [`/tasks`](https://github.com/sashachabin/code-in-the-dark/tree/master/tasks) folder:
@@ -59,7 +53,6 @@ There are 12 prepared tasks in [`/tasks`](https://github.com/sashachabin/code-in
 - …
 
 To add a new task, put your own screenshot in [`/tasks`](https://github.com/sashachabin/code-in-the-dark/tree/master/tasks)
-
 
 ## Roadmap
 
@@ -97,4 +90,4 @@ npm run dev
 ## See also
 
 - [codeinthedark.com](http://codeinthedark.com) — the Code In The Dark contest by [Tictail](https://tictail.com/)
-- [codeinthedark/editor](https://github.com/codeinthedark/editor) — the original editor  
+- [codeinthedark/editor](https://github.com/codeinthedark/editor) — the original editor

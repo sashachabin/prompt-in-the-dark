@@ -1,7 +1,7 @@
 {
   "name": "vite-project",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -9,13 +9,13 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "emmet-monaco-es": "^5.5.0",
+    "monaco-editor": "^0.52.2"
+  },
   "devDependencies": {
     "@types/node": "^26.2.0",
     "typescript": "^7.0.2",
     "vite": "^6.3.5"
-  },
-  "dependencies": {
-    "emmet-monaco-es": "^5.5.0",
-    "monaco-editor": "^0.52.2"
   }
 }

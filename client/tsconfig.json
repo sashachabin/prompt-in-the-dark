@@ -7,5 +7,12 @@
     "noEmit": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["vite.config.ts", "types.ts", "utils/**/*.ts", "game/**/*.ts", "tv/**/*.ts", "admin/**/*.ts"]
+  "include": [
+    "vite.config.ts",
+    "types.ts",
+    "utils/**/*.ts",
+    "game/**/*.ts",
+    "tv/**/*.ts",
+    "admin/**/*.ts"
+  ]
 }

@@ -9,8 +9,7 @@ const params = new URLSearchParams(location.search);
 const timerEl = document.getElementById("timer") as HTMLDivElement;
 const refImg = document.getElementById("ref") as HTMLImageElement;
 
-let playerNumber =
-  Number(params.get("player")) || Number(localStorage.getItem("player"));
+let playerNumber = Number(params.get("player")) || Number(localStorage.getItem("player"));
 while (!playerNumber) {
   playerNumber = Number(prompt("Введите номер игрока (1 или 2):")) || 0;
 }
@@ -22,17 +21,14 @@ self.MonacoEnvironment = {
   getWorker: (_moduleId, _label) => new HtmlWorker(),
 };
 
-const editor = monaco.editor.create(
-  document.getElementById("editor") as HTMLElement,
-  {
-    value: localStorage.getItem("value") || "",
-    language: "html",
-    theme: "vs-dark",
-    fontSize: 15,
-    automaticLayout: true,
-    scrollBeyondLastLine: false,
-  },
-);
+const editor = monaco.editor.create(document.getElementById("editor") as HTMLElement, {
+  value: localStorage.getItem("value") || "",
+  language: "html",
+  theme: "vs-dark",
+  fontSize: 15,
+  automaticLayout: true,
+  scrollBeyondLastLine: false,
+});
 
 emmetHTML(monaco);
 
@@ -79,7 +75,5 @@ function onState(state: GameState): void {
 
 setInterval(() => {
   const timeLeft = getTimeLeft(lastState);
-  timerEl.textContent = lastState.taskId
-    ? `${formatTime(timeLeft)}`
-    : "Waiting for the start…";
+  timerEl.textContent = lastState.taskId ? `${formatTime(timeLeft)}` : "Waiting for the start…";
 }, 250);
