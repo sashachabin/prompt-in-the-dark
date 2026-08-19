@@ -23,6 +23,8 @@ let tasks: TaskInfo[] = [];
 const socket = connectSocket((msg) => {
   if (msg.type === "tasks") {
     loadTasks(msg.tasks);
+    tasks = msg.tasks;
+    setRef();
   }
   if (msg.type === "state") {
     onState(msg.state);
@@ -72,17 +74,6 @@ startForm.addEventListener("submit", (e) => {
   });
 });
 
-function submitCode(player: Player, code: string): void {
-  socket.send({ type: "code", player, code });
-}
-
-one.addEventListener("input", (e) =>
-  submitCode(1, (e.target as HTMLTextAreaElement).value),
-);
-two.addEventListener("input", (e) =>
-  submitCode(2, (e.target as HTMLTextAreaElement).value),
-);
-
 let currentTaskId: string | null = null;
 let lastCodes: Record<Player, string> = { 1: "", 2: "" };
 let lastState: GameState = {
@@ -92,6 +83,12 @@ let lastState: GameState = {
   codes: { 1: "", 2: "" },
 };
 
+function setRef(): void {
+  const t = tasks.find((x) => x.name === currentTaskId);
+  refImg.src = t ? t.url : "";
+  imgName.innerText = t ? t.name : "";
+}
+
 function onState(state: GameState): void {
   lastState = state;
   const timeLeft = getTimeLeft(state);
@@ -100,9 +97,7 @@ function onState(state: GameState): void {
   }
   if (state.taskId !== currentTaskId) {
     currentTaskId = state.taskId;
-    const t = tasks.find((x) => x.name === state.taskId);
-    refImg.src = t ? t.url : "";
-    imgName.innerText = t ? t.name : "";
+    setRef();
     one.value = "";
     two.value = "";
     lastCodes = { 1: "", 2: "" };

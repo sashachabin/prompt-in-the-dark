@@ -12,11 +12,6 @@ export class GameManager {
     null;
   private codes: Record<Player, string> = { 1: "", 2: "" };
 
-  reset(): void {
-    this.current = null;
-    this.codes = { 1: "", 2: "" };
-  }
-
   start(taskId: string, duration: number): void {
     this.current = { taskId, duration, startAt: Date.now() };
     this.codes = { 1: "", 2: "" };

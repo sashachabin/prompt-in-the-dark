@@ -2,14 +2,12 @@ import type { ClientMessage, ServerMessage } from "../types.ts";
 
 export interface SocketHandle {
   send: (data: ClientMessage | string) => void;
-  close: () => void;
 }
 
 export function connectSocket(
   onMessage: (msg: ServerMessage) => void,
 ): SocketHandle {
   let ws: WebSocket | null = null;
-  let closed = false;
 
   function open(): void {
     const scheme = location.protocol === "https:" ? "wss" : "ws";
@@ -25,9 +23,7 @@ export function connectSocket(
 
     ws.addEventListener("error", () => ws?.close());
 
-    ws.addEventListener("close", () => {
-      if (!closed) setTimeout(open, 1000);
-    });
+    ws.addEventListener("close", () => setTimeout(open, 1000));
   }
 
   open();
@@ -37,10 +33,6 @@ export function connectSocket(
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(typeof data === "string" ? data : JSON.stringify(data));
       }
-    },
-    close() {
-      closed = true;
-      ws?.close();
     },
   };
 }

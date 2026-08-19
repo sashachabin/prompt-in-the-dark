@@ -9,14 +9,14 @@ const params = new URLSearchParams(location.search);
 const timerEl = document.getElementById("timer") as HTMLDivElement;
 const refImg = document.getElementById("ref") as HTMLImageElement;
 
-let PLAYER: number =
+let playerNumber =
   Number(params.get("player")) || Number(localStorage.getItem("player"));
-while (!PLAYER) {
-  PLAYER = Number(prompt("Введите номер игрока (1 или 2):"));
+while (!playerNumber) {
+  playerNumber = Number(prompt("Введите номер игрока (1 или 2):")) || 0;
 }
 window.history.replaceState({}, "", "/game/");
-localStorage.setItem("player", String(PLAYER));
-const player = PLAYER as Player;
+localStorage.setItem("player", String(playerNumber));
+const player = playerNumber as Player;
 
 self.MonacoEnvironment = {
   getWorker: (_moduleId, _label) => new HtmlWorker(),
@@ -38,7 +38,10 @@ emmetHTML(monaco);
 
 const socket = connectSocket((msg) => {
   if (msg.type === "state") onState(msg.state);
-  if (msg.type === "tasks") tasks = msg.tasks;
+  if (msg.type === "tasks") {
+    tasks = msg.tasks;
+    setRef();
+  }
 });
 
 socket.send({ type: "getTasks" });
@@ -58,6 +61,11 @@ editor.onDidChangeModelContent(() => {
   socket.send({ type: "code", player, code });
 });
 
+function setRef(): void {
+  const t = tasks.find((x) => x.name === lastState.taskId);
+  refImg.src = t ? t.url : "";
+}
+
 function onState(state: GameState): void {
   lastState = state;
   timerEl.textContent = state.taskId
@@ -65,8 +73,7 @@ function onState(state: GameState): void {
     : "Waiting for the start…";
   if (state.taskId !== currentTaskId) {
     currentTaskId = state.taskId;
-    const t = tasks.find((x) => x.name === state.taskId);
-    refImg.src = t ? t.url : "";
+    setRef();
   }
 }
 
