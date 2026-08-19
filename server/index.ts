@@ -39,6 +39,10 @@ type ServerMessage =
 
 type ClientMessage =
   | { type: "start"; taskId: string; duration: number; password: string }
+  | { type: "pause"; password: string }
+  | { type: "resume"; password: string }
+  | { type: "adjustTime"; delta: number; password: string }
+  | { type: "stop"; password: string }
   | { type: "code"; player: Player; code: string }
   | { type: "getTasks" };
 
@@ -98,6 +102,33 @@ wss.on("connection", (socket) => {
       }
       game.start(taskId, Number(duration));
       send(socket, { type: "started", taskId, duration: Number(duration) });
+      broadcast({ type: "state", state: game.getState() });
+      return;
+    }
+
+    if (msg.type === "pause" || msg.type === "resume" || msg.type === "stop") {
+      if (!checkAdminPassword(msg.password)) {
+        send(socket, { type: "error", message: "Invalid admin password" });
+        return;
+      }
+      if (msg.type === "pause") game.pause();
+      else if (msg.type === "resume") game.resume();
+      else game.stop();
+      broadcast({ type: "state", state: game.getState() });
+      return;
+    }
+
+    if (msg.type === "adjustTime") {
+      if (!checkAdminPassword(msg.password)) {
+        send(socket, { type: "error", message: "Invalid admin password" });
+        return;
+      }
+      const delta = Number(msg.delta);
+      if (!Number.isFinite(delta)) {
+        send(socket, { type: "error", message: "Bad time delta" });
+        return;
+      }
+      game.adjustTime(delta);
       broadcast({ type: "state", state: game.getState() });
       return;
     }

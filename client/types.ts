@@ -4,6 +4,9 @@ export interface GameState {
   taskId: string | null;
   duration: number;
   startAt: number;
+  paused: boolean;
+  pausedAt: number | null;
+  ended: boolean;
   codes: Record<Player, string>;
 }
 
@@ -20,5 +23,9 @@ export type ServerMessage =
 
 export type ClientMessage =
   | { type: "start"; taskId: string; duration: number; password: string }
+  | { type: "pause"; password: string }
+  | { type: "resume"; password: string }
+  | { type: "adjustTime"; delta: number; password: string }
+  | { type: "stop"; password: string }
   | { type: "code"; player: Player; code: string }
   | { type: "getTasks" };

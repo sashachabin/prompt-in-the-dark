@@ -1,3 +1,5 @@
+@import "./global.css";
+
 body {
   background: black;
   margin: 0;
@@ -6,7 +8,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: system-ui, sans-serif;
   padding: 0 48px;
 }
 

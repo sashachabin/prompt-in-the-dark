@@ -1,4 +1,4 @@
-import { formatTime, getTimeLeft } from "../utils/formatTime.ts";
+import { formatTimeHTML, getTimeLeftMs } from "../utils/formatTime.ts";
 import { connectSocket } from "../utils/socket.ts";
 import type { GameState, TaskInfo } from "../types.ts";
 
@@ -12,6 +12,9 @@ let lastState: GameState = {
   taskId: null,
   duration: 0,
   startAt: 0,
+  paused: false,
+  pausedAt: null,
+  ended: false,
   codes: { 1: "", 2: "" },
 };
 let tasks: TaskInfo[] = [];
@@ -32,9 +35,13 @@ function setRef(): void {
   img.src = t ? t.url : "";
 }
 
+function renderTimer(): void {
+  timerEl.innerHTML = lastState.taskId ? formatTimeHTML(getTimeLeftMs(lastState)) : "0:00";
+}
+
 function onState(state: GameState): void {
   lastState = state;
-  timerEl.innerText = formatTime(getTimeLeft(state));
+  renderTimer();
   if (state.taskId !== currentTaskId) {
     currentTaskId = state.taskId;
     setRef();
@@ -52,6 +59,4 @@ function onState(state: GameState): void {
   }
 }
 
-setInterval(() => {
-  timerEl.innerText = formatTime(getTimeLeft(lastState));
-}, 250);
+setInterval(renderTimer, 100);

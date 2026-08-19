@@ -8,47 +8,65 @@
   </head>
 
   <body>
-    <div class="content-wrapper">
-      <section class="control-section">
-        <h2 class="section-title">Run task</h2>
-        <form id="startForm" class="start-form">
-          <select name="taskId" id="taskSelect" class="task-select"></select>
-          <br />
-          <br />
-          <label class="duration-label">
-            Dureation of round:&nbsp;<input
-              name="duration"
-              type="number"
-              value="10"
-              class="duration-input"
-            />
-            minutes
-          </label>
-          <br />
-          <br />
-          <button type="submit" class="button">Start round</button>
-          <div id="status" class="status-message"></div>
-        </form>
+    <header class="admin-header">
+      <h1 class="main-title">Admin panel</h1>
+      <div class="round-status">
+        <span id="round-status" class="status-pill">Waiting</span>
+        <span id="time-left" class="time-left">—</span>
+      </div>
+      <div id="status" class="status-message"></div>
+    </header>
 
-        <br />
-        <h2 class="section-title">Tasks list</h2>
-        <ul id="taskList" class="task-list"></ul>
+    <div class="content-wrapper">
+      <section class="panel">
+        <h2 class="section-title">New round</h2>
+        <form id="startForm" class="start-form">
+          <div id="taskGrid" class="task-grid"></div>
+          <div class="form-row">
+            <label class="duration-label">
+              Duration:&nbsp;<input
+                name="duration"
+                type="number"
+                value="10"
+                min="1"
+                class="duration-input"
+              />
+              min
+            </label>
+            <button type="submit" class="button button-primary">Start round</button>
+          </div>
+        </form>
       </section>
 
-      <section class="round-details-section">
-        <h2 class="section-title">Current round <span id="time-left" class="time-left"></span></h2>
-        <div id="img-name" class="image-name">—</div>
-
+      <section class="panel">
+        <h2 class="section-title">
+          Current round&nbsp;<span id="img-name" class="image-name">—</span>
+        </h2>
         <img id="refImg" alt="" class="reference-image" />
-
-        <h2 class="section-title">Players' html</h2>
-
-        <div class="players-html">
-          <textarea name="" id="one" class="code-textarea" disabled></textarea>
-          <textarea name="" id="two" class="code-textarea" disabled></textarea>
+        <div class="time-controls">
+          <button type="button" class="button" data-adjust="-60">−1m</button>
+          <button type="button" class="button" data-adjust="-30">−30s</button>
+          <button type="button" class="button" data-adjust="-10">−10s</button>
+          <button type="button" class="button" data-adjust="10">+10s</button>
+          <button type="button" class="button" data-adjust="30">+30s</button>
+          <button type="button" class="button" data-adjust="60">+1m</button>
+        </div>
+        <div class="round-controls">
+          <button type="button" id="pauseBtn" class="button button-secondary" disabled>
+            Pause
+          </button>
+          <button type="button" id="endBtn" class="button button-danger">End round</button>
         </div>
       </section>
     </div>
+
+    <section class="panel players-panel">
+      <h2 class="section-title">Players' html</h2>
+      <div class="players-html">
+        <textarea id="one" class="code-textarea" disabled></textarea>
+        <textarea id="two" class="code-textarea" disabled></textarea>
+      </div>
+    </section>
 
     <script type="module" src="./admin.ts"></script>
   </body>

@@ -1,3 +1,5 @@
+@import "../global.css";
+
 * {
   box-sizing: border-box;
 }
@@ -7,10 +9,9 @@ html {
 }
 
 body {
-  font-family: system-ui, sans-serif;
   background: black;
   color: white;
-  padding: 72px 60px 60px;
+  padding: 80px 48px 48px;
   overflow: auto;
 }
 
@@ -44,13 +45,13 @@ body {
   border-radius: 8px;
   background: white;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
-  height: 70vh;
+  height: 72vh;
 }
 
 .player-frame {
   border-radius: 8px;
   background: white;
-  height: 70vh;
+  height: 72vh;
   width: 100%;
   border: none;
 }
@@ -61,4 +62,10 @@ body {
   transform: translateX(-50%);
   top: 24px;
   font-size: 64px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer .ms {
+  font-size: 0.5em;
+  color: rgba(255, 255, 255, 0.3);
 }

@@ -1,6 +1,6 @@
 import * as monaco from "monaco-editor";
 import { emmetHTML } from "emmet-monaco-es";
-import { formatTime, getTimeLeft } from "../utils/formatTime.ts";
+import { formatTimeHTML, getTimeLeftMs } from "../utils/formatTime.ts";
 import { connectSocket } from "../utils/socket.ts";
 import type { GameState, Player, TaskInfo } from "../types.ts";
 import HtmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
@@ -48,6 +48,9 @@ let lastState: GameState = {
   taskId: null,
   duration: 0,
   startAt: 0,
+  paused: false,
+  pausedAt: null,
+  ended: false,
   codes: { 1: "", 2: "" },
 };
 
@@ -62,18 +65,19 @@ function setRef(): void {
   refImg.src = t ? t.url : "";
 }
 
+function renderTimer(): void {
+  timerEl.innerHTML = lastState.taskId
+    ? formatTimeHTML(getTimeLeftMs(lastState))
+    : "Waiting for the start…";
+}
+
 function onState(state: GameState): void {
   lastState = state;
-  timerEl.textContent = state.taskId
-    ? `${formatTime(getTimeLeft(state))}`
-    : "Waiting for the start…";
+  renderTimer();
   if (state.taskId !== currentTaskId) {
     currentTaskId = state.taskId;
     setRef();
   }
 }
 
-setInterval(() => {
-  const timeLeft = getTimeLeft(lastState);
-  timerEl.textContent = lastState.taskId ? `${formatTime(timeLeft)}` : "Waiting for the start…";
-}, 250);
+setInterval(renderTimer, 100);
