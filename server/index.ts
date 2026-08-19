@@ -35,7 +35,8 @@ type ServerMessage =
   | { type: "state"; state: GameState }
   | { type: "tasks"; tasks: TaskInfo[] }
   | { type: "started"; taskId: string; duration: number }
-  | { type: "error"; message: string };
+  | { type: "error"; message: string }
+  | { type: "confetti" };
 
 type ClientMessage =
   | { type: "start"; taskId: string; duration: number; password: string }
@@ -44,7 +45,8 @@ type ClientMessage =
   | { type: "adjustTime"; delta: number; password: string }
   | { type: "stop"; password: string }
   | { type: "code"; player: Player; code: string }
-  | { type: "getTasks" };
+  | { type: "getTasks" }
+  | { type: "confetti"; password: string };
 
 function toTaskInfos(tasks: string[]): TaskInfo[] {
   return tasks.map((name) => ({ name, url: `/tasks/${name}` }));
@@ -130,6 +132,15 @@ wss.on("connection", (socket) => {
       }
       game.adjustTime(delta);
       broadcast({ type: "state", state: game.getState() });
+      return;
+    }
+
+    if (msg.type === "confetti") {
+      if (!checkAdminPassword(msg.password)) {
+        send(socket, { type: "error", message: "Invalid admin password" });
+        return;
+      }
+      broadcast({ type: "confetti" });
       return;
     }
 

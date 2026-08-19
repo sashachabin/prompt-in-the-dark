@@ -19,7 +19,8 @@ export type ServerMessage =
   | { type: "state"; state: GameState }
   | { type: "tasks"; tasks: TaskInfo[] }
   | { type: "started"; taskId: string; duration: number }
-  | { type: "error"; message: string };
+  | { type: "error"; message: string }
+  | { type: "confetti" };
 
 export type ClientMessage =
   | { type: "start"; taskId: string; duration: number; password: string }
@@ -28,4 +29,5 @@ export type ClientMessage =
   | { type: "adjustTime"; delta: number; password: string }
   | { type: "stop"; password: string }
   | { type: "code"; player: Player; code: string }
+  | { type: "confetti"; password: string }
   | { type: "getTasks" };

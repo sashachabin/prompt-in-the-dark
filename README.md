@@ -67,7 +67,7 @@ To add a new task, put your own screenshot in [`/tasks`](https://github.com/sash
 - [ ] Switch code/preview on TV
 - [x] Pulling → WebSockets
 - [x] Add extra time to the round
-- [ ] End game & show confetti
+- [x] End game & show confetti
 - [ ] Support 4 players
 - [ ] Prompt In The Dark — AI rounds with ChatGPT/Deepseek etc. 🤓
 

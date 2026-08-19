@@ -20,6 +20,7 @@ const pauseBtn = document.getElementById("pauseBtn") as HTMLButtonElement;
 const endBtn = document.getElementById("endBtn") as HTMLButtonElement;
 const refImg = document.getElementById("refImg") as HTMLImageElement;
 const imgName = document.getElementById("img-name") as HTMLDivElement;
+const confettiBtn = document.getElementById("confettiBtn") as HTMLButtonElement;
 
 let tasks: TaskInfo[] = [];
 let selectedTaskId = "";
@@ -134,6 +135,10 @@ startForm.addEventListener("submit", (e) => {
     duration: Number(fd.get("duration")) * 60,
     password: adminPassword,
   });
+});
+
+confettiBtn.addEventListener("click", () => {
+  socket.send({ type: "confetti", password: adminPassword });
 });
 
 pauseBtn.addEventListener("click", () => {

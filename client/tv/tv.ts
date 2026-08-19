@@ -1,6 +1,7 @@
 import { formatTimeHTML, getTimeLeftMs } from "../utils/formatTime.ts";
 import { connectSocket } from "../utils/socket.ts";
 import type { GameState, TaskInfo } from "../types.ts";
+import { triggerConfetti } from "./trigger-confetti.ts";
 
 const player1Result = document.getElementById("frame1") as HTMLIFrameElement;
 const player2Result = document.getElementById("frame2") as HTMLIFrameElement;
@@ -24,6 +25,9 @@ const socket = connectSocket((msg) => {
   if (msg.type === "tasks") {
     tasks = msg.tasks;
     setRef();
+  }
+  if (msg.type === "confetti") {
+    triggerConfetti();
   }
 });
 

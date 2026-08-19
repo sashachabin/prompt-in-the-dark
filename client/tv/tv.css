@@ -11,7 +11,7 @@ html {
 body {
   background: black;
   color: white;
-  padding: 80px 48px 48px;
+  padding: 72px 48px 48px;
   overflow: auto;
 }
 
@@ -45,13 +45,13 @@ body {
   border-radius: 8px;
   background: white;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
-  height: 72vh;
+  height: 74vh;
 }
 
 .player-frame {
   border-radius: 8px;
   background: white;
-  height: 72vh;
+  height: 74vh;
   width: 100%;
   border: none;
 }
@@ -68,4 +68,34 @@ body {
 .timer .ms {
   font-size: 0.5em;
   color: rgba(255, 255, 255, 0.3);
+}
+
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 14px;
+  animation: fall linear forwards;
 }
