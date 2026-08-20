@@ -13,6 +13,7 @@
       <div class="round-status">
         <span id="round-status" class="status-pill">Waiting</span>
         <span id="time-left" class="time-left">—</span>
+        <span id="timeDelta" class="time-delta"></span>
       </div>
       <div id="status" class="status-message"></div>
     </header>
@@ -21,13 +22,18 @@
       <section class="panel">
         <h2 class="section-title">New round</h2>
         <form id="startForm" class="start-form">
+          <div class="mode-select">
+            <span class="control-label">Mode:</span>
+            <button type="button" id="modeCodeBtn" class="seg-btn">Code</button>
+            <button type="button" id="modePromptBtn" class="seg-btn selected">Prompt</button>
+          </div>
           <div id="taskGrid" class="task-grid"></div>
           <div class="form-row">
             <label class="duration-label">
               Duration:&nbsp;<input
                 name="duration"
                 type="number"
-                value="10"
+                value="4"
                 min="1"
                 class="duration-input"
               />
@@ -44,14 +50,36 @@
         </h2>
         <img id="refImg" alt="" class="reference-image" />
         <div class="time-controls">
+          <button type="button" class="button" data-adjust="-300">−5m</button>
+          <button type="button" class="button" data-adjust="-120">−2m</button>
           <button type="button" class="button" data-adjust="-60">−1m</button>
           <button type="button" class="button" data-adjust="-30">−30s</button>
           <button type="button" class="button" data-adjust="-10">−10s</button>
           <button type="button" class="button" data-adjust="10">+10s</button>
           <button type="button" class="button" data-adjust="30">+30s</button>
           <button type="button" class="button" data-adjust="60">+1m</button>
+          <button type="button" class="button" data-adjust="120">+2m</button>
+          <button type="button" class="button" data-adjust="300">+5m</button>
+        </div>
+        <div id="tvControls" class="tv-controls" hidden>
+          <span class="control-label">TV:</span>
+          <button type="button" id="tvPromptBtn" class="seg-btn">Prompts</button>
+          <button type="button" id="tvResultBtn" class="seg-btn">Results</button>
+          <button type="button" id="focus1Btn" class="button" title="Показать только игрока 1">
+            1
+          </button>
+          <button type="button" id="focus2Btn" class="button" title="Показать только игрока 2">
+            2
+          </button>
+          <button type="button" id="focusNoneBtn" class="button" title="Показать обоих">
+            Both
+          </button>
+          <button type="button" id="speakStopBtn" class="button" title="Stop speaking">■</button>
         </div>
         <div class="round-controls">
+          <button type="button" id="clearBtn" class="button" title="Очистить ввод у обоих игроков">
+            🧹 Clear input
+          </button>
           <button type="button" id="confettiBtn" class="button">🎉 Confetti</button>
           <button type="button" id="pauseBtn" class="button button-secondary" disabled>
             Pause
@@ -62,10 +90,68 @@
     </div>
 
     <section class="panel players-panel">
-      <h2 class="section-title">Players' html</h2>
-      <div class="players-html">
-        <textarea id="one" class="code-textarea" disabled></textarea>
-        <textarea id="two" class="code-textarea" disabled></textarea>
+      <h2 id="playersTitle" class="section-title">Players' prompts</h2>
+      <div class="players-columns">
+        <div class="player-col">
+          <div class="player-col-header">
+            <input
+              type="text"
+              id="name1"
+              class="player-name"
+              maxlength="40"
+              placeholder="Player 1"
+              title="Имя игрока"
+            />
+            <div class="player-col-actions">
+              <button
+                type="button"
+                id="speak1Btn"
+                class="button button-small"
+                title="Зачитать промпт"
+              >
+                🔊
+              </button>
+              <button type="button" id="genBtn1" class="button button-small">⚙️ Generate</button>
+            </div>
+          </div>
+          <textarea id="one" class="code-textarea" disabled></textarea>
+          <textarea
+            id="html1"
+            class="code-textarea html-output"
+            readonly
+            placeholder="Generated HTML…"
+          ></textarea>
+        </div>
+        <div class="player-col">
+          <div class="player-col-header">
+            <input
+              type="text"
+              id="name2"
+              class="player-name"
+              maxlength="40"
+              placeholder="Player 2"
+              title="Имя игрока"
+            />
+            <div class="player-col-actions">
+              <button
+                type="button"
+                id="speak2Btn"
+                class="button button-small"
+                title="Зачитать промпт"
+              >
+                🔊
+              </button>
+              <button type="button" id="genBtn2" class="button button-small">⚙️ Generate</button>
+            </div>
+          </div>
+          <textarea id="two" class="code-textarea" disabled></textarea>
+          <textarea
+            id="html2"
+            class="code-textarea html-output"
+            readonly
+            placeholder="Generated HTML…"
+          ></textarea>
+        </div>
       </div>
     </section>
 

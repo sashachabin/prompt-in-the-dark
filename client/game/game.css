@@ -6,6 +6,7 @@ html {
   margin: 0;
   padding: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .timer {
@@ -26,9 +27,42 @@ html {
   color: rgba(255, 255, 255, 0.3);
 }
 
+@keyframes bump {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.timer.bump {
+  animation: bump 0.35s ease;
+}
+
 .editor {
   width: 100%;
   height: 100vh;
+}
+
+.prompt-input {
+  display: block;
+  resize: none;
+  border: none;
+  padding: 16px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font:
+    18px/1.6 ui-monospace,
+    monospace;
+  outline: none;
+}
+
+.prompt-input:focus {
+  background: #232323;
 }
 
 .reference-image {

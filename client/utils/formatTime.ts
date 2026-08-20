@@ -22,3 +22,18 @@ export function getTimeLeftMs(state: GameState): number {
   const now = state.paused ? (state.pausedAt ?? Date.now()) : Date.now();
   return Math.max(0, (end - now) / 1000);
 }
+
+let tickRemainingMs: number | null = null;
+let tickReceivedAt = 0;
+
+export function setServerTick(remainingMs: number): void {
+  tickRemainingMs = remainingMs;
+  tickReceivedAt = Date.now();
+}
+
+export function getTimeLeftSec(state: GameState): number {
+  if (tickRemainingMs !== null) {
+    return Math.max(0, tickRemainingMs - (Date.now() - tickReceivedAt)) / 1000;
+  }
+  return getTimeLeftMs(state);
+}

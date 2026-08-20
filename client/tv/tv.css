@@ -56,6 +56,61 @@ body {
   border: none;
 }
 
+.prompt-text {
+  margin: 0;
+  padding: 24px;
+  height: 70vh;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e8e8e8;
+  font-size: 26px;
+  line-height: 1;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.prompt-text .caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  animation: caret-blink 1.1s ease-in-out infinite;
+}
+
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+
+.voice-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.75);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+
+.voice-hint[hidden] {
+  display: none;
+}
+
 .timer {
   position: fixed;
   left: 50%;
@@ -68,6 +123,57 @@ body {
 .timer .ms {
   font-size: 0.5em;
   color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes bump {
+  0% {
+    transform: translateX(-50%) scale(1);
+  }
+  35% {
+    transform: translateX(-50%) scale(1.05);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+.timer.bump {
+  animation: bump 0.35s ease;
+}
+
+body.focus-1 .col-p2,
+body.focus-1 .col-orig,
+body.focus-2 .col-p1,
+body.focus-2 .col-orig {
+  display: none;
+}
+
+body.focus-1 .main-grid,
+body.focus-2 .main-grid {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  height: calc(100vh - 140px);
+}
+
+body.focus-1 .player-title,
+body.focus-2 .player-title {
+  font-size: 48px;
+  text-align: center;
+}
+
+body.focus-1 .player-frame,
+body.focus-2 .player-frame {
+  width: 600px;
+  height: 800px;
+  margin: 0 auto;
+  transform: scale(var(--focus-scale, 1));
+}
+
+body.focus-1 .prompt-text,
+body.focus-2 .prompt-text {
+  height: calc(100vh - 220px);
+  font-size: 44px;
+  line-height: 1.6;
 }
 
 .confetti-container {

@@ -1,4 +1,8 @@
 export type Player = 1 | 2;
+export type PlayerFocus = "none" | Player;
+
+export type GameMode = "code" | "prompt";
+export type TvShow = "prompt" | "result";
 
 export interface GameState {
   taskId: string | null;
@@ -7,7 +11,11 @@ export interface GameState {
   paused: boolean;
   pausedAt: number | null;
   ended: boolean;
+  mode: GameMode;
+  tvShow: TvShow;
+  focus: PlayerFocus;
   codes: Record<Player, string>;
+  players: Record<Player, string>;
 }
 
 export class GameManager {
@@ -20,8 +28,14 @@ export class GameManager {
     ended: boolean;
   } | null = null;
   private codes: Record<Player, string> = { 1: "", 2: "" };
+  private htmls: Record<Player, string> = { 1: "", 2: "" };
+  private mode: GameMode = "prompt";
+  private tvShow: TvShow = "prompt";
+  private focus: PlayerFocus = "none";
+  private players: Record<Player, string> = { 1: "Player 1", 2: "Player 2" };
+  private roundStartedAt: number | null = null;
 
-  start(taskId: string, duration: number): void {
+  start(taskId: string, duration: number, mode: GameMode): void {
     this.current = {
       taskId,
       duration,
@@ -30,11 +44,43 @@ export class GameManager {
       pausedAt: null,
       ended: false,
     };
+    this.mode = mode;
+    this.focus = "none";
+    this.roundStartedAt = Date.now();
+    this.codes = { 1: "", 2: "" };
+    this.htmls = { 1: "", 2: "" };
+  }
+
+  getRoundStartedAt(): number | null {
+    return this.roundStartedAt;
+  }
+
+  clearCodes(): void {
     this.codes = { 1: "", 2: "" };
   }
 
   submitCode(player: Player, code: string): void {
     this.codes[player] = code;
+  }
+
+  setHtml(player: Player, html: string): void {
+    this.htmls[player] = html;
+  }
+
+  getHtmls(): Record<Player, string> {
+    return this.htmls;
+  }
+
+  setTvShow(show: TvShow): void {
+    this.tvShow = show;
+  }
+
+  setFocus(focus: PlayerFocus): void {
+    this.focus = focus;
+  }
+
+  renamePlayer(player: Player, name: string): void {
+    this.players[player] = name;
   }
 
   pause(): void {
@@ -91,7 +137,11 @@ export class GameManager {
         paused: false,
         pausedAt: null,
         ended: false,
+        mode: this.mode,
+        tvShow: this.tvShow,
+        focus: this.focus,
         codes: this.codes,
+        players: this.players,
       };
     }
     return {
@@ -101,7 +151,11 @@ export class GameManager {
       paused: this.current.paused,
       pausedAt: this.current.pausedAt,
       ended: this.current.ended,
+      mode: this.mode,
+      tvShow: this.tvShow,
+      focus: this.focus,
       codes: this.codes,
+      players: this.players,
     };
   }
 }

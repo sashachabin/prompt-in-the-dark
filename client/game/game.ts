@@ -1,8 +1,8 @@
 import * as monaco from "monaco-editor";
 import { emmetHTML } from "emmet-monaco-es";
-import { formatTimeHTML, getTimeLeftMs } from "../utils/formatTime.ts";
+import { formatTimeHTML, getTimeLeftSec, setServerTick } from "../utils/formatTime.ts";
 import { connectSocket } from "../utils/socket.ts";
-import type { GameState, Player, TaskInfo } from "../types.ts";
+import type { GameMode, GameState, Player, TaskInfo } from "../types.ts";
 import HtmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 
 const params = new URLSearchParams(location.search);
@@ -21,8 +21,9 @@ self.MonacoEnvironment = {
   getWorker: (_moduleId, _label) => new HtmlWorker(),
 };
 
+const storageKey = `code-${player}`;
 const editor = monaco.editor.create(document.getElementById("editor") as HTMLElement, {
-  value: localStorage.getItem("value") || "",
+  value: localStorage.getItem(storageKey) || "",
   language: "html",
   theme: "vs-dark",
   fontSize: 15,
@@ -32,11 +33,31 @@ const editor = monaco.editor.create(document.getElementById("editor") as HTMLEle
 
 emmetHTML(monaco);
 
+const editorEl = document.getElementById("editor") as HTMLDivElement;
+const promptInput = document.getElementById("promptInput") as HTMLTextAreaElement;
+promptInput.value = localStorage.getItem(storageKey) || "";
+
+function applyMode(mode: "code" | "prompt"): void {
+  const promptMode = mode === "prompt";
+  editorEl.hidden = promptMode;
+  promptInput.hidden = !promptMode;
+  if (promptMode) promptInput.focus();
+}
+
+promptInput.addEventListener("input", () => {
+  localStorage.setItem(storageKey, promptInput.value);
+  socket.send({ type: "code", player, code: promptInput.value });
+});
+
 const socket = connectSocket((msg) => {
   if (msg.type === "state") onState(msg.state);
   if (msg.type === "tasks") {
     tasks = msg.tasks;
     setRef();
+  }
+  if (msg.type === "tick") {
+    setServerTick(msg.remainingMs);
+    renderTimer();
   }
 });
 
@@ -51,12 +72,29 @@ let lastState: GameState = {
   paused: false,
   pausedAt: null,
   ended: false,
+  mode: "prompt",
+  tvShow: "prompt",
+  focus: "none",
   codes: { 1: "", 2: "" },
+  players: { 1: "Player 1", 2: "Player 2" },
 };
+
+let lastSec = -1;
+let lastAppliedMode: GameMode | null = null;
+
+function bumpIfJump(newSec: number): void {
+  const diff = newSec - lastSec;
+  lastSec = newSec;
+  if (diff > 0 || diff < -1) {
+    timerEl.classList.remove("bump");
+    void timerEl.offsetWidth;
+    timerEl.classList.add("bump");
+  }
+}
 
 editor.onDidChangeModelContent(() => {
   const code = editor.getValue();
-  localStorage.setItem("value", code);
+  localStorage.setItem(storageKey, code);
   socket.send({ type: "code", player, code });
 });
 
@@ -66,14 +104,22 @@ function setRef(): void {
 }
 
 function renderTimer(): void {
-  timerEl.innerHTML = lastState.taskId
-    ? formatTimeHTML(getTimeLeftMs(lastState))
-    : "Waiting for the start…";
+  if (!lastState.taskId) {
+    timerEl.innerHTML = "Waiting for the start…";
+    return;
+  }
+  const sec = getTimeLeftSec(lastState);
+  bumpIfJump(Math.floor(sec));
+  timerEl.innerHTML = formatTimeHTML(sec);
 }
 
 function onState(state: GameState): void {
   lastState = state;
   renderTimer();
+  if (state.mode !== lastAppliedMode) {
+    lastAppliedMode = state.mode;
+    applyMode(state.mode);
+  }
   if (state.taskId !== currentTaskId) {
     currentTaskId = state.taskId;
     setRef();

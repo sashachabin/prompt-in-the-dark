@@ -9,20 +9,23 @@
 
   <body>
     <div class="main-grid">
-      <div class="player-column">
-        <h3 class="player-title">Player 1</h3>
-        <iframe id="frame1" sandbox class="player-frame"></iframe>
+      <div class="player-column col-p1">
+        <h3 class="player-title" id="title1">Player 1</h3>
+        <iframe id="frame1" sandbox="allow-scripts" class="player-frame"></iframe>
+        <pre id="prompt1" class="prompt-text" hidden></pre>
       </div>
-      <div class="original-column">
+      <div class="original-column col-orig">
         <h3 class="original-title">Original</h3>
         <img id="refImg" src="" class="reference-image" />
       </div>
-      <div class="player-column">
-        <h3 class="player-title right-align">Player 2</h3>
-        <iframe id="frame2" sandbox class="player-frame"></iframe>
+      <div class="player-column col-p2">
+        <h3 class="player-title right-align" id="title2">Player 2</h3>
+        <iframe id="frame2" sandbox="allow-scripts" class="player-frame"></iframe>
+        <pre id="prompt2" class="prompt-text" hidden></pre>
       </div>
       <div id="timer" class="timer"></div>
     </div>
+    <div id="voiceHint" class="voice-hint">Нажмите, чтобы включить звук</div>
 
     <script type="module" src="./tv.ts"></script>
   </body>
